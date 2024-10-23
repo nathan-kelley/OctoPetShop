@@ -9,6 +9,7 @@ step "dev-approval" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Approve #{envnamespace} Deployment"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
@@ -23,6 +24,7 @@ step "qa-approval" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Approve #{envnamespace} Deployment"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
@@ -37,6 +39,7 @@ step "dev-approval-clone-1" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Approve #{envnamespace} Deployment"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
@@ -50,6 +53,7 @@ step "manual-intervention-required" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "there needs to be a manual step intervention... like deploying the DB"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+            Octopus.Action.RunOnServer = "false"
         }
     }
 }
@@ -70,6 +74,7 @@ step "deploy-kubernetes-yaml" {
             Octopus.Action.Kubernetes.ServerSideApply.ForceConflicts = "True"
             Octopus.Action.KubernetesContainers.CustomResourceYamlFileName = "k8s/*.yaml"
             Octopus.Action.KubernetesContainers.Namespace = "#{envnamespace}-octodemo"
+            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptSource = "GitRepository"
         }
         worker_pool_variable = ""
@@ -88,6 +93,7 @@ step "consolidate-release-notes" {
     name = "Consolidate Release Notes"
 
     action {
+        is_disabled = true
         notes = "notes on release notes step"
         properties = {
             Consolidate_ApiKey = "#{apikey}"
