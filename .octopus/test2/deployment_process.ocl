@@ -1,0 +1,103 @@
+step "dev-approval" {
+    name = "Dev Approval"
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["development"]
+        is_disabled = true
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Approve #{envnamespace} Deployment"
+            Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+        }
+    }
+}
+
+step "qa-approval" {
+    name = "QA Approval"
+
+    action {
+        action_type = "Octopus.Manual"
+        environments = ["staging"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Approve #{envnamespace} Deployment"
+            Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+        }
+    }
+}
+
+step "dev-approval-clone-1" {
+    name = "Prod Approval"
+
+    action "prod-approval" {
+        action_type = "Octopus.Manual"
+        environments = ["production"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Approve #{envnamespace} Deployment"
+            Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+        }
+    }
+}
+
+step "manual-intervention-required" {
+    name = "Manual Intervention Required"
+
+    action {
+        action_type = "Octopus.Manual"
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "there needs to be a manual step intervention... like deploying the DB"
+            Octopus.Action.Manual.ResponsibleTeamIds = "global/everyone"
+        }
+    }
+}
+
+step "deploy-kubernetes-yaml" {
+    name = "Deploy Kubernetes YAML"
+    properties = {
+        Octopus.Action.TargetRoles = "taggytagface"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployRawYaml"
+        properties = {
+            Octopus.Action.GitRepository.Source = "External"
+            Octopus.Action.Kubernetes.DeploymentTimeout = "180"
+            Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
+            Octopus.Action.Kubernetes.ServerSideApply.Enabled = "True"
+            Octopus.Action.Kubernetes.ServerSideApply.ForceConflicts = "True"
+            Octopus.Action.KubernetesContainers.CustomResourceYamlFileName = "k8s/*.yaml"
+            Octopus.Action.KubernetesContainers.Namespace = "#{envnamespace}-octodemo"
+            Octopus.Action.Script.ScriptSource = "GitRepository"
+        }
+        worker_pool_variable = ""
+
+        git_dependencies {
+            default_branch = "master"
+            file_path_filters = ["k8s/*.yaml"]
+            git_credential_id = "GitCredentials-3"
+            git_credential_type = "Library"
+            repository_uri = "https://github.com/nathan-kelley/OctoPetShop.git"
+        }
+    }
+}
+
+step "consolidate-release-notes" {
+    name = "Consolidate Release Notes"
+
+    action {
+        notes = "notes on release notes step"
+        properties = {
+            Consolidate_ApiKey = "#{apikey}"
+            Consolidate_Dedupe = "True"
+            Consolidate_Order = "Newest"
+            Consolidate_RemoveWhitespace = "True"
+            Octopus.Action.RunOnServer = "true"
+            Octopus.Action.Template.Id = "ActionTemplates-1"
+            Octopus.Action.Template.Version = "13"
+        }
+        worker_pool_variable = ""
+    }
+}

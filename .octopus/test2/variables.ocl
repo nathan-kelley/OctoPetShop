@@ -1,0 +1,13 @@
+variable "envnamespace" {
+    value "dev" {
+        environment = ["development"]
+    }
+
+    value "qa" {
+        environment = ["staging"]
+    }
+
+    value "prod" {
+        environment = ["production"]
+    }
+}
