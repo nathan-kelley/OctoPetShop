@@ -59,7 +59,7 @@ step "manual-intervention-required" {
 }
 
 step "deploy-kubernetes-yaml" {
-    name = "Deploy Kubernetes YAML"
+    name = "Deploy Kubernetes YAML to Kube"
     properties = {
         Octopus.Action.TargetRoles = "taggytagface"
     }
