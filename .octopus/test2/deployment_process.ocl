@@ -107,16 +107,3 @@ step "consolidate-release-notes" {
         worker_pool_variable = ""
     }
 }
-
-step "azure-key-vault-retrieve-secrets" {
-    name = "Azure Key Vault - Retrieve Secrets"
-
-    action {
-        properties = {
-            Azure.KeyVault.RetrieveSecrets.PrintVariableNames = "False"
-            Octopus.Action.Template.Id = "ActionTemplates-21"
-            Octopus.Action.Template.Version = "2"
-        }
-        worker_pool_variable = ""
-    }
-}
