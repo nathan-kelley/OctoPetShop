@@ -107,3 +107,18 @@ step "consolidate-release-notes" {
         worker_pool_variable = ""
     }
 }
+
+step "azure-functions-deployment" {
+    name = "Azure Functions Deployment"
+    properties = {
+        Octopus.Action.TargetRoles = "targettag"
+    }
+
+    action {
+        properties = {
+            Octopus.Action.Template.Id = "ActionTemplates-41"
+            Octopus.Action.Template.Version = "4"
+        }
+        worker_pool_variable = ""
+    }
+}
